@@ -1,0 +1,9 @@
+{{define "content"}}
+<h1>{{.Title}}</h1>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+<form method="post" action="/login">
+  <input type="password" name="password" autocomplete="current-password" placeholder="Password" required>
+  <label><input type="checkbox" name="remember" value="1"> Remember me</label>
+  <button type="submit">Sign in</button>
+</form>
+{{end}}
