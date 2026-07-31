@@ -3,9 +3,10 @@ package server
 import "net/http"
 
 type loginData struct {
-	Title string
-	Theme string
-	Error string
+	Title     string
+	Theme     string
+	CustomCss string
+	Error     string
 }
 
 func (s *Server) login(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +14,8 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/settings", http.StatusSeeOther)
 		return
 	}
-	s.renderPage(w, "login", loginData{Title: "Login", Theme: "auto"})
+	c := s.deps.Store.Snapshot()
+	s.renderPage(w, "login", loginData{Title: "Login", Theme: "auto", CustomCss: c.CustomCss})
 }
 
 func (s *Server) loginSubmit(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +25,8 @@ func (s *Server) loginSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	if !s.deps.Auth.Verify(r.FormValue("password")) {
 		w.WriteHeader(http.StatusUnauthorized)
-		s.renderPage(w, "login", loginData{Title: "Login", Theme: "auto", Error: "Incorrect password"})
+		c := s.deps.Store.Snapshot()
+		s.renderPage(w, "login", loginData{Title: "Login", Theme: "auto", CustomCss: c.CustomCss, Error: "Incorrect password"})
 		return
 	}
 	s.deps.Auth.SetSession(w, r.FormValue("remember") == "1")

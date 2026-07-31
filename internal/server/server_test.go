@@ -65,3 +65,15 @@ func TestDashboardSectionRollup(t *testing.T) {
 		t.Fatalf("section rollup dot missing; body: %s", body)
 	}
 }
+
+func TestCustomCssInjected(t *testing.T) {
+	s := newTestServer(t)
+	_ = s.deps.Store.Update(func(c *config.Config) error { c.CustomCss = "body{background:#abc}"; return nil })
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	s.Handler().ServeHTTP(rec, req)
+	body := rec.Body.String()
+	if !strings.Contains(body, "<style>") || !strings.Contains(body, "background:#abc") {
+		t.Fatalf("custom css not injected: %s", body)
+	}
+}

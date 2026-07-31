@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/static/css/themes.css">
   <link rel="stylesheet" href="/static/css/views.css">
   <link rel="stylesheet" href="/static/css/settings.css">
+  {{if .CustomCss}}<style>{{css .CustomCss}}</style>{{end}}
 </head>
 <body>
   <main class="container" style="--maxw:{{.AppMaxWidth}}px">

@@ -19,6 +19,7 @@ type settingsView struct {
 	Title       string
 	Theme       string
 	AppMaxWidth int
+	CustomCss   string
 	Config      template.JS
 	IconPacks   []string
 	Themes      []string
@@ -40,6 +41,7 @@ func (s *Server) settings(w http.ResponseWriter, r *http.Request) {
 		Title:       c.Title + " — Settings",
 		Theme:       c.DefaultTheme,
 		AppMaxWidth: c.Appearance.Page.MaxWidth,
+		CustomCss:   c.CustomCss,
 		Config:      template.JS(raw),
 		IconPacks:   s.deps.Icons.Collections(),
 		Themes:      []string{"auto", "light", "dark", "sepia", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha", "nord", "dracula", "gruvbox", "tokyo-night"},

@@ -16,6 +16,7 @@ func (s *Server) renderPage(w http.ResponseWriter, page string, data any) {
 			"iconSVG":  s.iconSVG,
 			"statusOf": statusOf,
 			"json":     marshalJSON,
+			"css":      func(s string) template.CSS { return template.CSS(s) },
 			"list":     func(args ...any) []any { return args },
 		}).
 		ParseFS(web.TemplateFS, "templates/layout.html", "templates/"+page+".html"))
