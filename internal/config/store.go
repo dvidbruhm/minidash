@@ -51,4 +51,14 @@ func (s *Store) replace(c *Config) {
 	s.mu.Unlock()
 }
 
+// Reload re-reads the config file from disk and swaps it in.
+func (s *Store) Reload() error {
+	c, err := Load(s.path)
+	if err != nil {
+		return err
+	}
+	s.replace(c)
+	return nil
+}
+
 func (s *Store) Path() string { return s.path }
