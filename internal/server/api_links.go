@@ -25,7 +25,7 @@ type linkReq struct {
 func (s *Server) createLink(w http.ResponseWriter, r *http.Request) {
 	req, ok := decodeLink(r)
 	if !ok {
-		http.Error(w, "name and url required", http.StatusBadRequest)
+		http.Error(w, "invalid item (link needs name+url; note needs text)", http.StatusBadRequest)
 		return
 	}
 	_ = s.deps.Store.Update(func(c *config.Config) error {
@@ -43,7 +43,7 @@ func (s *Server) updateLink(w http.ResponseWriter, r *http.Request) {
 	}
 	req, ok := decodeLink(r)
 	if !ok {
-		http.Error(w, "name and url required", http.StatusBadRequest)
+		http.Error(w, "invalid item (link needs name+url; note needs text)", http.StatusBadRequest)
 		return
 	}
 	if err := s.deps.Store.Update(func(c *config.Config) error {

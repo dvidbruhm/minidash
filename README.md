@@ -12,6 +12,9 @@ dots. Edit everything from the in-app **Settings** page or by editing the YAML.
   Dracula, Gruvbox, Tokyo Night, plus **System/Auto**
 - **Optional sections** to group links
 - **Status dots**: backend pings each link and shows up/down/unknown
+- **Notes**: any item can be a note instead of a link (title + text, in the same
+  grid). Notes add/remove/reorder/section exactly like links and are excluded
+  from health checks.
 - **Status overview**: a topbar summary (`N up · N down`), per-section rollup dots,
   and a per-link **history sparkline** (last 24 checks, persisted to
   `status-history.json` so it survives restarts)
@@ -80,6 +83,10 @@ links:
     color: "#F46800"
     section: media
     health: true
+  - type: note             # optional; omit for a normal link
+    name: SSH info         # optional title
+    text: "ssh admin@10.0.0.5"
+    color: "#fabd2f"
 custom_css: ""   # optional raw CSS injected into every page
 ```
 
