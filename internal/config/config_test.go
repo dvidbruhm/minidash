@@ -88,3 +88,29 @@ func TestCustomCssRoundTrip(t *testing.T) {
 		t.Fatalf("CustomCss = %q", got.CustomCss)
 	}
 }
+
+func TestNoteRoundTrip(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	c := Default()
+	c.Links = []Link{
+		{Name: "Grafana", URL: "https://g.test", Icon: "simple-icons:grafana", Color: "#F46800"},
+		{Type: "note", Name: "SSH", Text: "ssh admin@10.0.0.5", Color: "#fabd2f"},
+	}
+	if err := Save(path, &c); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	got, err := Load(path)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if len(got.Links) != 2 {
+		t.Fatalf("links = %d", len(got.Links))
+	}
+	ln := got.Links[1]
+	if ln.Type != "note" || ln.Text != "ssh admin@10.0.0.5" || ln.URL != "" {
+		t.Fatalf("note not preserved: %+v", ln)
+	}
+	if got.Links[0].Type != "" && got.Links[0].Type != "link" {
+		t.Fatalf("link type should be empty/link, got %q", got.Links[0].Type)
+	}
+}

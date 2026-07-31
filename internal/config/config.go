@@ -82,14 +82,19 @@ type Section struct {
 }
 
 type Link struct {
+	Type        string `yaml:"type,omitempty" json:"type,omitempty"`
 	Name        string `yaml:"name" json:"name"`
 	Description string `yaml:"description,omitempty" json:"description,omitempty"`
+	Text        string `yaml:"text,omitempty" json:"text,omitempty"`
 	URL         string `yaml:"url" json:"url"`
 	Icon        string `yaml:"icon" json:"icon"`
 	Color       string `yaml:"color" json:"color"`
 	Section     string `yaml:"section,omitempty" json:"section,omitempty"`
 	Health      *bool  `yaml:"health,omitempty" json:"health,omitempty"`
 }
+
+// IsNote reports whether this item is a note (rather than a link).
+func (l Link) IsNote() bool { return l.Type == "note" }
 
 // Default returns a Config populated with sensible defaults.
 func Default() Config {
