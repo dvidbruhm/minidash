@@ -1,6 +1,13 @@
 {{define "content"}}
 <div class="topbar">
-  <h1>{{.Title}}</h1>
+  <div class="title-wrap">
+    <h1>{{.Title}}</h1>
+    <span class="status-summary" id="status-summary">
+      {{if gt .Up 0}}<i class="s-up"></i> {{.Up}} up{{end}}
+      {{if gt .Down 0}}<i class="s-down"></i> {{.Down}} down{{end}}
+      {{if gt .Unknown 0}}<i class="s-unknown"></i> {{.Unknown}} unknown{{end}}
+    </span>
+  </div>
   <div class="controls">
     <div class="view-toggle" id="view-toggle">
       {{range .Views}}<button type="button" data-view="{{.}}">{{.}}</button>{{end}}
@@ -17,13 +24,14 @@
 <div id="dashboard" data-default-view="default">
   {{$showDesc := .ShowDesc}} {{$status := .Status}}
   {{range .Groups}}
-    {{if .Name}}<h2 class="section-title">{{.Name}}</h2>{{end}}
+    {{if .Name}}<h2 class="section-title"><span class="sec-dot sec-{{.Rollup}}" title="{{.Rollup}}"></span>{{.Name}}</h2>{{end}}
     <div class="grid">
       {{range .Links}}
       <a class="link" href="{{.URL}}" target="_blank" rel="noopener noreferrer" style="color:{{.Color}}">
         <span class="link-icon">{{iconSVG .Icon}}</span>
         <span class="link-name">{{.Name}}</span>
         {{if and $showDesc .Description}}<span class="link-desc">{{.Description}}</span>{{end}}
+        <span class="spark">{{range index $.History .URL}}<i class="sq sq-{{.}}"></i>{{end}}</span>
         <span class="status-dot status-{{statusOf $status .URL}}" title="{{statusOf $status .URL}}"></span>
       </a>
       {{end}}

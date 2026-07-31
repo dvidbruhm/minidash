@@ -7,34 +7,86 @@ import (
 )
 
 type dashGroup struct {
-	Name  string
-	Links []config.Link
+	Name   string
+	Links  []config.Link
+	Rollup string
 }
 
 type dashData struct {
 	Title       string
 	Theme       string
 	AppMaxWidth int
+	CustomCss   string
 	Groups      []dashGroup
 	Views       []string
 	Status      map[string]string
+	History     map[string][]string
 	ShowDesc    bool
+	Up          int
+	Down        int
+	Unknown     int
 }
 
 func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 	c := s.deps.Store.Snapshot()
 	status := map[string]string{}
+	history := map[string][]string{}
 	if c.Health.Enabled {
 		status = s.deps.Health.Snapshot()
+		history = s.deps.Health.History()
 	}
+	groups := groupLinks(c)
+
+	up, down, unknown := 0, 0, 0
+	for _, l := range c.Links {
+		if !linkHealthOn(c, l) {
+			continue
+		}
+		switch statusOf(status, l.URL) {
+		case "up":
+			up++
+		case "down":
+			down++
+		default:
+			unknown++
+		}
+	}
+	for i := range groups {
+		gDown, gUnknown := false, false
+		for _, l := range groups[i].Links {
+			if !linkHealthOn(c, l) {
+				continue
+			}
+			switch statusOf(status, l.URL) {
+			case "down":
+				gDown = true
+			case "unknown":
+				gUnknown = true
+			}
+		}
+		switch {
+		case gDown:
+			groups[i].Rollup = "down"
+		case gUnknown:
+			groups[i].Rollup = "unknown"
+		default:
+			groups[i].Rollup = "up"
+		}
+	}
+
 	data := dashData{
 		Title:       c.Title,
 		Theme:       c.DefaultTheme,
 		AppMaxWidth: c.Appearance.Page.MaxWidth,
-		Groups:      groupLinks(c),
+		CustomCss:   c.CustomCss,
+		Groups:      groups,
 		Views:       []string{"default", "compact", "card", "large"},
 		Status:      status,
+		History:     history,
 		ShowDesc:    c.Appearance.Text.ShowDescription,
+		Up:          up,
+		Down:        down,
+		Unknown:     unknown,
 	}
 	s.renderPage(w, "dashboard", data)
 }
