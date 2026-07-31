@@ -87,7 +87,7 @@ function settings() {
       fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: this.cfg.title, default_theme: this.cfg.default_theme, default_view: this.cfg.default_view, health: this.cfg.health }) });
     },
     saveAppearance() {
-      fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ appearance: this.cfg.appearance }) });
+      fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ appearance: this.cfg.appearance, custom_css: this.cfg.custom_css }) });
     }
   };
 }

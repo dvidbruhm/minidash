@@ -15,7 +15,7 @@ func TestHistoryRingBuffer(t *testing.T) {
 	up := httptest.NewServer(okHandler(200))
 	defer up.Close()
 	ch := New(500*time.Millisecond, 3) // cap 3
-	for i := 0; i < 4; i++ { // 4 checks -> oldest evicted
+	for i := 0; i < 4; i++ {           // 4 checks -> oldest evicted
 		ch.CheckAll([]string{up.URL})
 	}
 	h := ch.History()

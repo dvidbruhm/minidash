@@ -53,6 +53,9 @@
       <label>Status dot size <input type="number" x-model.number="cfg.appearance.status_dot.size"></label>
       <label>Status dot position <select x-model="cfg.appearance.status_dot.position"><option>bottom-right</option><option>top-right</option></select></label>
     </div>
+    <label class="full">Custom CSS
+      <textarea x-model="cfg.custom_css" rows="4" placeholder="/* extra CSS, applied to every page */" spellcheck="false"></textarea>
+    </label>
     <button class="btn primary" @click="saveAppearance()">Save appearance</button>
   </section>
 

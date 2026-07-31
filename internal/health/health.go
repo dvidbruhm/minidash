@@ -22,10 +22,10 @@ type Checker struct {
 // of recent samples retained per URL (<=0 disables history).
 func New(timeout time.Duration, historyCap int) *Checker {
 	return &Checker{
-		status:   map[string]string{},
-		history:  map[string][]string{},
-		cap:      historyCap,
-		client:   &http.Client{Timeout: timeout},
+		status:  map[string]string{},
+		history: map[string][]string{},
+		cap:     historyCap,
+		client:  &http.Client{Timeout: timeout},
 	}
 }
 
