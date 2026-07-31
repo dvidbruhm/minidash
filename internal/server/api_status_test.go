@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"minidash/internal/config"
 )
 
 func TestStatusAPI(t *testing.T) {
@@ -28,5 +30,21 @@ func TestStatusAPI(t *testing.T) {
 	}
 	if v.History == nil {
 		t.Fatal("history should be a non-nil array")
+	}
+}
+
+func TestStatusExcludesNotes(t *testing.T) {
+	s := newTestServer(t)
+	_ = s.deps.Store.Update(func(c *config.Config) error {
+		c.Links = append(c.Links, config.Link{Type: "note", Text: "remember this"})
+		return nil
+	})
+	req := httptest.NewRequest(http.MethodGet, "/api/status", nil)
+	rec := httptest.NewRecorder()
+	s.Handler().ServeHTTP(rec, req)
+	var m map[string]statusResp
+	json.Unmarshal(rec.Body.Bytes(), &m)
+	if _, ok := m[""]; ok {
+		t.Fatalf("empty-url note leaked into status: %s", rec.Body)
 	}
 }

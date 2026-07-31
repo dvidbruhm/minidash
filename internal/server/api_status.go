@@ -39,6 +39,9 @@ func (s *Server) apiStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 func linkHealthOn(c config.Config, l config.Link) bool {
+	if l.URL == "" {
+		return false // notes and any URL-less items are never health-checked
+	}
 	if l.Health != nil {
 		return *l.Health
 	}
