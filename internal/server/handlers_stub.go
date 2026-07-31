@@ -7,11 +7,6 @@ func notImpl(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) settings(w http.ResponseWriter, r *http.Request)        { notImpl(w, r) }
-func (s *Server) createLink(w http.ResponseWriter, r *http.Request)      { notImpl(w, r) }
-func (s *Server) reorderLinks(w http.ResponseWriter, r *http.Request)    { notImpl(w, r) }
-func (s *Server) updateLink(w http.ResponseWriter, r *http.Request)      { notImpl(w, r) }
-func (s *Server) deleteLink(w http.ResponseWriter, r *http.Request)      { notImpl(w, r) }
-func (s *Server) duplicateLink(w http.ResponseWriter, r *http.Request)   { notImpl(w, r) }
 func (s *Server) createSection(w http.ResponseWriter, r *http.Request)   { notImpl(w, r) }
 func (s *Server) reorderSections(w http.ResponseWriter, r *http.Request) { notImpl(w, r) }
 func (s *Server) updateSection(w http.ResponseWriter, r *http.Request)   { notImpl(w, r) }
