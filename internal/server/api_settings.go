@@ -13,6 +13,7 @@ type settingsReq struct {
 	DefaultView  string             `json:"default_view"`
 	Health       *config.Health     `json:"health,omitempty"`
 	Appearance   *config.Appearance `json:"appearance,omitempty"`
+	CustomCss    *string            `json:"custom_css,omitempty"`
 }
 
 func (s *Server) updateSettings(w http.ResponseWriter, r *http.Request) {
@@ -37,6 +38,9 @@ func (s *Server) updateSettings(w http.ResponseWriter, r *http.Request) {
 		if req.Appearance != nil {
 			c.Appearance = *req.Appearance
 			c.ApplyDefaults()
+		}
+		if req.CustomCss != nil {
+			c.CustomCss = *req.CustomCss
 		}
 		return nil
 	})

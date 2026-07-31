@@ -21,3 +21,23 @@ func TestUpdateSettings(t *testing.T) {
 		t.Fatalf("appearance not applied: %d", c.Appearance.Page.MaxWidth)
 	}
 }
+
+func TestUpdateSettingsCustomCss(t *testing.T) {
+	s := newTestServer(t)
+	// set
+	putJSON(s, "/api/settings", `{"custom_css":"body{background:red}"}`)
+	if s.deps.Store.Snapshot().CustomCss != "body{background:red}" {
+		t.Fatal("custom_css not set")
+	}
+	// clear with empty string
+	putJSON(s, "/api/settings", `{"custom_css":""}`)
+	if s.deps.Store.Snapshot().CustomCss != "" {
+		t.Fatalf("custom_css not cleared: %q", s.deps.Store.Snapshot().CustomCss)
+	}
+	// set again, then send a payload without the field -> unchanged
+	putJSON(s, "/api/settings", `{"custom_css":"h1{color:blue}"}`)
+	putJSON(s, "/api/settings", `{"title":"Other"}`)
+	if s.deps.Store.Snapshot().CustomCss != "h1{color:blue}" {
+		t.Fatal("custom_css should be unchanged when field absent")
+	}
+}
