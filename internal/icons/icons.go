@@ -12,10 +12,10 @@ import (
 var embedded embed.FS
 
 type collection struct {
-	Icons    map[string]iconDef `json:"icons"`
-	Aliases  map[string]alias   `json:"aliases"`
-	Width    int                `json:"width"`
-	Height   int                `json:"height"`
+	Icons   map[string]iconDef `json:"icons"`
+	Aliases map[string]alias   `json:"aliases"`
+	Width   int                `json:"width"`
+	Height  int                `json:"height"`
 }
 
 type iconDef struct {

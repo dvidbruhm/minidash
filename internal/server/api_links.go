@@ -121,7 +121,10 @@ func toLink(req linkReq) config.Link {
 
 var errNotFound = &httpError{code: http.StatusNotFound, msg: "not found"}
 
-type httpError struct{ code int; msg string }
+type httpError struct {
+	code int
+	msg  string
+}
 
 func (e *httpError) Error() string { return e.msg }
 
