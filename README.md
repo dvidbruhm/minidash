@@ -12,6 +12,11 @@ dots. Edit everything from the in-app **Settings** page or by editing the YAML.
   Dracula, Gruvbox, Tokyo Night, plus **System/Auto**
 - **Optional sections** to group links
 - **Status dots**: backend pings each link and shows up/down/unknown
+- **Status overview**: a topbar summary (`N up · N down`), per-section rollup dots,
+  and a per-link **history sparkline** (last 24 checks, persisted to
+  `status-history.json` so it survives restarts)
+- **Custom CSS**: an Appearance-panel textarea whose contents are injected into
+  every page for owner styling
 - **Searchable icon picker** — Simple Icons (brand logos), Lucide, Tabler,
   bundled in the binary (fully offline)
 - **Appearance panel**: page width/background/font, grid columns/gap, item
@@ -75,6 +80,7 @@ links:
     color: "#F46800"
     section: media
     health: true
+custom_css: ""   # optional raw CSS injected into every page
 ```
 
 ## Security notes
