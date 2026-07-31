@@ -1,0 +1,34 @@
+{{define "content"}}
+<div class="topbar">
+  <h1>{{.Title}}</h1>
+  <div class="controls">
+    <div class="view-toggle" id="view-toggle">
+      {{range .Views}}<button type="button" data-view="{{.}}">{{.}}</button>{{end}}
+    </div>
+    <select id="theme-select">
+      {{$cur := .Theme}}
+      {{range $t := list "auto" "light" "dark" "sepia" "catppuccin-frappe" "catppuccin-macchiato" "catppuccin-mocha" "nord" "dracula" "gruvbox" "tokyo-night"}}
+      <option value="{{$t}}" {{if eq $t $cur}}selected{{end}}>{{$t}}</option>
+      {{end}}
+    </select>
+  </div>
+</div>
+
+<div id="dashboard" data-default-view="default">
+  {{$showDesc := .ShowDesc}} {{$status := .Status}}
+  {{range .Groups}}
+    {{if .Name}}<h2 class="section-title">{{.Name}}</h2>{{end}}
+    <div class="grid">
+      {{range .Links}}
+      <a class="link" href="{{.URL}}" target="_blank" rel="noopener noreferrer" style="color:{{.Color}}">
+        <span class="link-icon">{{iconSVG .Icon}}</span>
+        <span class="link-name">{{.Name}}</span>
+        {{if and $showDesc .Description}}<span class="link-desc">{{.Description}}</span>{{end}}
+        <span class="status-dot status-{{statusOf $status .URL}}" title="{{statusOf $status .URL}}"></span>
+      </a>
+      {{end}}
+    </div>
+  {{end}}
+</div>
+<script>window.__MINIDASH_DEFAULT_THEME = {{printf "%q" .Theme}};</script>
+{{end}}
