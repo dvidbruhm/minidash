@@ -4,14 +4,17 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"minidash/internal/config"
 	"minidash/internal/model"
 )
 
 type linkReq struct {
+	Type        string `json:"type"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Text        string `json:"text"`
 	URL         string `json:"url"`
 	Icon        string `json:"icon"`
 	Color       string `json:"color"`
@@ -106,6 +109,12 @@ func decodeLink(r *http.Request) (linkReq, bool) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return req, false
 	}
+	if req.Type == "note" {
+		if strings.TrimSpace(req.Text) == "" {
+			return req, false
+		}
+		return req, true
+	}
 	if req.Name == "" || req.URL == "" {
 		return req, false
 	}
@@ -114,8 +123,8 @@ func decodeLink(r *http.Request) (linkReq, bool) {
 
 func toLink(req linkReq) config.Link {
 	return config.Link{
-		Name: req.Name, Description: req.Description, URL: req.URL,
-		Icon: req.Icon, Color: req.Color, Section: req.Section, Health: req.Health,
+		Type: req.Type, Name: req.Name, Description: req.Description, Text: req.Text,
+		URL: req.URL, Icon: req.Icon, Color: req.Color, Section: req.Section, Health: req.Health,
 	}
 }
 

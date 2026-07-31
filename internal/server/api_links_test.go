@@ -79,4 +79,30 @@ func TestCreateLinkValidation(t *testing.T) {
 	}
 }
 
+func TestNoteCreateUpdate(t *testing.T) {
+	s := newTestServer(t)
+	rec := postJSON(s, "/api/links", `{"type":"note","name":"SSH","text":"ssh a@b","color":"#fff"}`)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("create note %d: %s", rec.Code, rec.Body)
+	}
+	c := s.deps.Store.Snapshot()
+	last := c.Links[len(c.Links)-1]
+	if last.Type != "note" || last.Text != "ssh a@b" || last.URL != "" {
+		t.Fatalf("note not stored: %+v", last)
+	}
+	// note without text -> 400
+	if rec := postJSON(s, "/api/links", `{"type":"note","text":"   "}`); rec.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for empty note text, got %d", rec.Code)
+	}
+	// update the note
+	id := strconv.Itoa(len(c.Links) - 1)
+	rec = putJSON(s, "/api/links/"+id, `{"type":"note","name":"SSH","text":"updated","color":"#fff"}`)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("update note %d", rec.Code)
+	}
+	if s.deps.Store.Snapshot().Links[atoi(id)].Text != "updated" {
+		t.Fatal("note text not updated")
+	}
+}
+
 func atoi(s string) int { n, _ := strconv.Atoi(s); return n }
