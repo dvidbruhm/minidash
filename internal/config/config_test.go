@@ -72,3 +72,19 @@ func TestLoadMalformed(t *testing.T) {
 		t.Fatalf("expected error for malformed yaml")
 	}
 }
+
+func TestCustomCssRoundTrip(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	c := Default()
+	c.CustomCss = "body { background: red; }"
+	if err := Save(path, &c); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	got, err := Load(path)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if got.CustomCss != "body { background: red; }" {
+		t.Fatalf("CustomCss = %q", got.CustomCss)
+	}
+}

@@ -13,6 +13,7 @@ type Config struct {
 	DefaultView  string     `yaml:"default_view" json:"default_view"`
 	DefaultTheme string     `yaml:"default_theme" json:"default_theme"`
 	PasswordHash string     `yaml:"password_hash,omitempty" json:"password_hash,omitempty"`
+	CustomCss    string     `yaml:"custom_css,omitempty" json:"custom_css,omitempty"`
 	Health       Health     `yaml:"health" json:"health"`
 	Appearance   Appearance `yaml:"appearance" json:"appearance"`
 	Sections     []Section  `yaml:"sections" json:"sections"`
