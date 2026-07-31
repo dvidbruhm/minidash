@@ -1,0 +1,22 @@
+[x-cloak]{display:none!important}
+section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:8px}
+input,select{display:block;width:100%;padding:6px 8px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:8px}
+.btn{background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+ul{list-style:none;padding:0;margin:8px 0}
+.links-list li{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+.links-list .drag{cursor:grab;color:var(--muted)}
+.links-list .preview{width:20px;height:20px;display:inline-flex}
+.links-list .preview svg{width:100%;height:100%}
+code{color:var(--muted);font-size:.8em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal-card{background:var(--bg);color:var(--fg);padding:20px;border-radius:12px;width:min(560px,92vw);max-height:88vh;overflow:auto}
+.picker .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;max-height:200px;overflow:auto;border:1px solid var(--border);border-radius:8px;padding:8px}
+.picker .res{background:none;border:0;font-size:22px;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center}
+.picker .res svg{width:1em;height:1em}
+.picker .chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.picker .chips button{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--fg);cursor:pointer}
+.picker .chips button.on{background:var(--accent);color:#fff}
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
