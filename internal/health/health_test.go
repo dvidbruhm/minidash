@@ -12,7 +12,7 @@ func TestChecker(t *testing.T) {
 	defer up.Close()
 	down := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(500) }))
 	defer down.Close()
-	ch := New(time.Second, 500*time.Millisecond)
+	ch := New(500*time.Millisecond, 24)
 	ch.CheckAll([]string{up.URL, down.URL, "http://127.0.0.1:0/nope"})
 	st := ch.Snapshot()
 	if st[up.URL] != "up" {

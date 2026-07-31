@@ -7,15 +7,22 @@ import (
 )
 
 type Checker struct {
-	mu     sync.RWMutex
-	status map[string]string
-	client *http.Client
+	mu       sync.RWMutex
+	status   map[string]string
+	history  map[string][]string
+	cap      int
+	histPath string
+	client   *http.Client
 }
 
-func New(_ time.Duration, timeout time.Duration) *Checker {
+// New creates a Checker. timeout bounds each request; historyCap is the number
+// of recent samples retained per URL (<=0 disables history).
+func New(timeout time.Duration, historyCap int) *Checker {
 	return &Checker{
-		status: map[string]string{},
-		client: &http.Client{Timeout: timeout},
+		status:   map[string]string{},
+		history:  map[string][]string{},
+		cap:      historyCap,
+		client:   &http.Client{Timeout: timeout},
 	}
 }
 
@@ -37,6 +44,13 @@ func (c *Checker) checkOne(u string) {
 		}
 		c.mu.Lock()
 		c.status[u] = status
+		if c.cap > 0 {
+			h := append(c.history[u], status)
+			if len(h) > c.cap {
+				h = h[len(h)-c.cap:]
+			}
+			c.history[u] = h
+		}
 		c.mu.Unlock()
 	}()
 	resp, err := c.client.Get(u)
@@ -55,6 +69,19 @@ func (c *Checker) Snapshot() map[string]string {
 	out := make(map[string]string, len(c.status))
 	for k, v := range c.status {
 		out[k] = v
+	}
+	return out
+}
+
+// History returns a defensive copy of recent samples per URL.
+func (c *Checker) History() map[string][]string {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	out := make(map[string][]string, len(c.history))
+	for k, v := range c.history {
+		cp := make([]string, len(v))
+		copy(cp, v)
+		out[k] = cp
 	}
 	return out
 }
