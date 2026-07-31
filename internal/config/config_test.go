@@ -89,6 +89,32 @@ func TestCustomCssRoundTrip(t *testing.T) {
 	}
 }
 
+func TestPaletteHotkey(t *testing.T) {
+	// default
+	if d := Default(); d.PaletteHotkey != "ctrl+p" {
+		t.Fatalf("default PaletteHotkey = %q", d.PaletteHotkey)
+	}
+	// empty -> default after load
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	os.WriteFile(path, []byte("title: X\nlinks: []\n"), 0o644)
+	c, err := Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.PaletteHotkey != "ctrl+p" {
+		t.Fatalf("empty PaletteHotkey should default to ctrl+p, got %q", c.PaletteHotkey)
+	}
+	// round-trip a custom value
+	c.PaletteHotkey = "ctrl+k"
+	if err := Save(path, c); err != nil {
+		t.Fatal(err)
+	}
+	got, _ := Load(path)
+	if got.PaletteHotkey != "ctrl+k" {
+		t.Fatalf("round-trip PaletteHotkey = %q", got.PaletteHotkey)
+	}
+}
+
 func TestNoteRoundTrip(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config.yaml")
 	c := Default()

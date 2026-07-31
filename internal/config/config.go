@@ -14,6 +14,7 @@ type Config struct {
 	DefaultTheme string     `yaml:"default_theme" json:"default_theme"`
 	PasswordHash string     `yaml:"password_hash,omitempty" json:"password_hash,omitempty"`
 	CustomCss    string     `yaml:"custom_css,omitempty" json:"custom_css,omitempty"`
+	PaletteHotkey string    `yaml:"palette_hotkey,omitempty" json:"palette_hotkey,omitempty"`
 	Health       Health     `yaml:"health" json:"health"`
 	Appearance   Appearance `yaml:"appearance" json:"appearance"`
 	Sections     []Section  `yaml:"sections" json:"sections"`
@@ -103,6 +104,7 @@ func Default() Config {
 		Title:        "Minidash",
 		DefaultView:  "default",
 		DefaultTheme: "auto",
+		PaletteHotkey: "ctrl+p",
 		Health:       Health{Enabled: true, IntervalSeconds: 60, TimeoutSeconds: 5},
 		Appearance: Appearance{
 			Page:      Page{MaxWidth: 1200, Background: "", FontFamily: "system", FontSize: 16},
@@ -148,6 +150,9 @@ func (c *Config) ApplyDefaults() {
 	}
 	if c.DefaultTheme == "" {
 		c.DefaultTheme = d.DefaultTheme
+	}
+	if c.PaletteHotkey == "" {
+		c.PaletteHotkey = d.PaletteHotkey
 	}
 	if c.Health.IntervalSeconds == 0 {
 		c.Health.IntervalSeconds = d.Health.IntervalSeconds
