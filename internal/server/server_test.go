@@ -77,3 +77,27 @@ func TestCustomCssInjected(t *testing.T) {
 		t.Fatalf("custom css not injected: %s", body)
 	}
 }
+
+func TestDashboardNoteRender(t *testing.T) {
+	s := newTestServer(t)
+	_ = s.deps.Store.Update(func(c *config.Config) error {
+		c.Links = []config.Link{
+			{Name: "Grafana", URL: "https://g.test", Icon: "simple-icons:grafana", Color: "#F46800"},
+			{Type: "note", Name: "Reminder", Text: "back up the NAS", Color: "#fabd2f"},
+		}
+		return nil
+	})
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	s.Handler().ServeHTTP(rec, req)
+	body := rec.Body.String()
+	if !strings.Contains(body, `class="link note"`) {
+		t.Fatalf("note card missing")
+	}
+	if !strings.Contains(body, "back up the NAS") {
+		t.Fatalf("note text missing")
+	}
+	if strings.Contains(body, `href=""`) {
+		t.Fatalf("note rendered as an anchor with empty href")
+	}
+}

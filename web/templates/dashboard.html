@@ -27,6 +27,13 @@
     {{if .Name}}<h2 class="section-title"><span class="sec-dot sec-{{.Rollup}}" title="{{.Rollup}}"></span>{{.Name}}</h2>{{end}}
     <div class="grid">
       {{range .Links}}
+      {{if .IsNote}}
+      <div class="link note" style="color:{{.Color}}">
+        {{if .Icon}}<span class="link-icon">{{iconSVG .Icon}}</span>{{end}}
+        {{if .Name}}<span class="link-name">{{.Name}}</span>{{end}}
+        {{if and $showDesc .Text}}<span class="note-text">{{.Text}}</span>{{end}}
+      </div>
+      {{else}}
       <a class="link" href="{{.URL}}" target="_blank" rel="noopener noreferrer" style="color:{{.Color}}">
         <span class="link-icon">{{iconSVG .Icon}}</span>
         <span class="link-name">{{.Name}}</span>
@@ -34,6 +41,7 @@
         <span class="spark">{{range index $.History .URL}}<i class="sq sq-{{.}}"></i>{{end}}</span>
         <span class="status-dot status-{{statusOf $status .URL}}" title="{{statusOf $status .URL}}"></span>
       </a>
+      {{end}}
       {{end}}
     </div>
   {{end}}
