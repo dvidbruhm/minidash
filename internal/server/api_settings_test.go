@@ -22,6 +22,14 @@ func TestUpdateSettings(t *testing.T) {
 	}
 }
 
+func TestUpdateSettingsPaletteHotkey(t *testing.T) {
+	s := newTestServer(t)
+	putJSON(s, "/api/settings", `{"palette_hotkey":"ctrl+k"}`)
+	if s.deps.Store.Snapshot().PaletteHotkey != "ctrl+k" {
+		t.Fatalf("palette_hotkey not applied: %q", s.deps.Store.Snapshot().PaletteHotkey)
+	}
+}
+
 func TestUpdateSettingsCustomCss(t *testing.T) {
 	s := newTestServer(t)
 	// set

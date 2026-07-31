@@ -8,12 +8,13 @@ import (
 )
 
 type settingsReq struct {
-	Title        string             `json:"title"`
-	DefaultTheme string             `json:"default_theme"`
-	DefaultView  string             `json:"default_view"`
-	Health       *config.Health     `json:"health,omitempty"`
-	Appearance   *config.Appearance `json:"appearance,omitempty"`
-	CustomCss    *string            `json:"custom_css,omitempty"`
+	Title         string             `json:"title"`
+	DefaultTheme  string             `json:"default_theme"`
+	DefaultView   string             `json:"default_view"`
+	Health        *config.Health     `json:"health,omitempty"`
+	Appearance    *config.Appearance `json:"appearance,omitempty"`
+	CustomCss     *string            `json:"custom_css,omitempty"`
+	PaletteHotkey *string            `json:"palette_hotkey,omitempty"`
 }
 
 func (s *Server) updateSettings(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +42,9 @@ func (s *Server) updateSettings(w http.ResponseWriter, r *http.Request) {
 		}
 		if req.CustomCss != nil {
 			c.CustomCss = *req.CustomCss
+		}
+		if req.PaletteHotkey != nil {
+			c.PaletteHotkey = *req.PaletteHotkey
 		}
 		return nil
 	})
