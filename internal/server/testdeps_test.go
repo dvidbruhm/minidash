@@ -40,5 +40,5 @@ func NewTestDeps(t *testing.T) Deps {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return Deps{Store: st, Auth: a, Health: health.New(time.Second, 500*time.Millisecond), Icons: stubIcons{}}
+	return Deps{Store: st, Auth: a, Health: health.New(500*time.Millisecond, 24), Icons: stubIcons{}}
 }

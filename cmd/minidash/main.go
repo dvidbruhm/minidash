@@ -56,7 +56,7 @@ func main() {
 	}
 
 	c := store.Snapshot()
-	ch := health.New(time.Duration(c.Health.IntervalSeconds)*time.Second, time.Duration(c.Health.TimeoutSeconds)*time.Second)
+	ch := health.New(time.Duration(c.Health.TimeoutSeconds)*time.Second, 24)
 	stop := make(chan struct{})
 	defer close(stop)
 	if c.Health.Enabled {
