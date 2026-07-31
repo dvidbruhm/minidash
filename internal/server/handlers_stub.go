@@ -7,8 +7,6 @@ func notImpl(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) settings(w http.ResponseWriter, r *http.Request)        { notImpl(w, r) }
-func (s *Server) apiIconsSearch(w http.ResponseWriter, r *http.Request)  { notImpl(w, r) }
-func (s *Server) apiIcon(w http.ResponseWriter, r *http.Request)         { notImpl(w, r) }
 func (s *Server) createLink(w http.ResponseWriter, r *http.Request)      { notImpl(w, r) }
 func (s *Server) reorderLinks(w http.ResponseWriter, r *http.Request)    { notImpl(w, r) }
 func (s *Server) updateLink(w http.ResponseWriter, r *http.Request)      { notImpl(w, r) }
