@@ -67,6 +67,9 @@ func (s *Server) Handler() http.Handler {
 
 	mux.Handle("PUT /api/settings", s.deps.Auth.Require(http.HandlerFunc(s.updateSettings)))
 
+	mux.Handle("GET /api/config/download", s.deps.Auth.Require(http.HandlerFunc(s.downloadConfig)))
+	mux.Handle("POST /api/config/upload", s.deps.Auth.Require(http.HandlerFunc(s.uploadConfig)))
+
 	return s.recover(mux)
 }
 
