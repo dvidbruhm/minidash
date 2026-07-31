@@ -9,85 +9,85 @@ import (
 
 // Config is the entire application configuration, serialized to YAML.
 type Config struct {
-	Title        string     `yaml:"title"`
-	DefaultView  string     `yaml:"default_view"`
-	DefaultTheme string     `yaml:"default_theme"`
-	PasswordHash string     `yaml:"password_hash,omitempty"`
-	Health       Health     `yaml:"health"`
-	Appearance   Appearance `yaml:"appearance"`
-	Sections     []Section  `yaml:"sections"`
-	Links        []Link     `yaml:"links"`
+	Title        string     `yaml:"title" json:"title"`
+	DefaultView  string     `yaml:"default_view" json:"default_view"`
+	DefaultTheme string     `yaml:"default_theme" json:"default_theme"`
+	PasswordHash string     `yaml:"password_hash,omitempty" json:"password_hash,omitempty"`
+	Health       Health     `yaml:"health" json:"health"`
+	Appearance   Appearance `yaml:"appearance" json:"appearance"`
+	Sections     []Section  `yaml:"sections" json:"sections"`
+	Links        []Link     `yaml:"links" json:"links"`
 }
 
 type Health struct {
-	Enabled         bool `yaml:"enabled"`
-	IntervalSeconds int  `yaml:"interval_seconds"`
-	TimeoutSeconds  int  `yaml:"timeout_seconds"`
+	Enabled         bool `yaml:"enabled" json:"enabled"`
+	IntervalSeconds int  `yaml:"interval_seconds" json:"interval_seconds"`
+	TimeoutSeconds  int  `yaml:"timeout_seconds" json:"timeout_seconds"`
 }
 
 type Appearance struct {
-	Page      Page      `yaml:"page"`
-	Grid      Grid      `yaml:"grid"`
-	Item      Item      `yaml:"item"`
-	Icon      IconSizes `yaml:"icon"`
-	Text      Text      `yaml:"text"`
-	StatusDot StatusDot `yaml:"status_dot"`
+	Page      Page      `yaml:"page" json:"page"`
+	Grid      Grid      `yaml:"grid" json:"grid"`
+	Item      Item      `yaml:"item" json:"item"`
+	Icon      IconSizes `yaml:"icon" json:"icon"`
+	Text      Text      `yaml:"text" json:"text"`
+	StatusDot StatusDot `yaml:"status_dot" json:"status_dot"`
 }
 
 type Page struct {
-	MaxWidth   int    `yaml:"max_width"`
-	Background string `yaml:"background"`
-	FontFamily string `yaml:"font_family"`
-	FontSize   int    `yaml:"font_size"`
+	MaxWidth   int    `yaml:"max_width" json:"max_width"`
+	Background string `yaml:"background" json:"background"`
+	FontFamily string `yaml:"font_family" json:"font_family"`
+	FontSize   int    `yaml:"font_size" json:"font_size"`
 }
 
 type Grid struct {
-	Columns      string `yaml:"columns"`
-	MinItemWidth int    `yaml:"min_item_width"`
-	Gap          int    `yaml:"gap"`
+	Columns      string `yaml:"columns" json:"columns"`
+	MinItemWidth int    `yaml:"min_item_width" json:"min_item_width"`
+	Gap          int    `yaml:"gap" json:"gap"`
 }
 
 type Item struct {
-	CornerRadius   int  `yaml:"corner_radius"`
-	Padding        int  `yaml:"padding"`
-	Background     bool `yaml:"background"`
-	Border         bool `yaml:"border"`
-	BorderStrength int  `yaml:"border_strength"`
-	Shadow         bool `yaml:"shadow"`
-	ShadowStrength int  `yaml:"shadow_strength"`
+	CornerRadius   int  `yaml:"corner_radius" json:"corner_radius"`
+	Padding        int  `yaml:"padding" json:"padding"`
+	Background     bool `yaml:"background" json:"background"`
+	Border         bool `yaml:"border" json:"border"`
+	BorderStrength int  `yaml:"border_strength" json:"border_strength"`
+	Shadow         bool `yaml:"shadow" json:"shadow"`
+	ShadowStrength int  `yaml:"shadow_strength" json:"shadow_strength"`
 }
 
 type IconSizes struct {
-	SizeDefault int `yaml:"size_default"`
-	SizeCompact int `yaml:"size_compact"`
-	SizeCard    int `yaml:"size_card"`
-	SizeLarge   int `yaml:"size_large"`
+	SizeDefault int `yaml:"size_default" json:"size_default"`
+	SizeCompact int `yaml:"size_compact" json:"size_compact"`
+	SizeCard    int `yaml:"size_card" json:"size_card"`
+	SizeLarge   int `yaml:"size_large" json:"size_large"`
 }
 
 type Text struct {
-	Align           string `yaml:"align"`
-	ShowDescription bool   `yaml:"show_description"`
+	Align           string `yaml:"align" json:"align"`
+	ShowDescription bool   `yaml:"show_description" json:"show_description"`
 }
 
 type StatusDot struct {
-	Enabled  bool   `yaml:"enabled"`
-	Size     int    `yaml:"size"`
-	Position string `yaml:"position"`
+	Enabled  bool   `yaml:"enabled" json:"enabled"`
+	Size     int    `yaml:"size" json:"size"`
+	Position string `yaml:"position" json:"position"`
 }
 
 type Section struct {
-	ID   string `yaml:"id"`
-	Name string `yaml:"name"`
+	ID   string `yaml:"id" json:"id"`
+	Name string `yaml:"name" json:"name"`
 }
 
 type Link struct {
-	Name        string `yaml:"name"`
-	Description string `yaml:"description,omitempty"`
-	URL         string `yaml:"url"`
-	Icon        string `yaml:"icon"`
-	Color       string `yaml:"color"`
-	Section     string `yaml:"section,omitempty"`
-	Health      *bool  `yaml:"health,omitempty"`
+	Name        string `yaml:"name" json:"name"`
+	Description string `yaml:"description,omitempty" json:"description,omitempty"`
+	URL         string `yaml:"url" json:"url"`
+	Icon        string `yaml:"icon" json:"icon"`
+	Color       string `yaml:"color" json:"color"`
+	Section     string `yaml:"section,omitempty" json:"section,omitempty"`
+	Health      *bool  `yaml:"health,omitempty" json:"health,omitempty"`
 }
 
 // Default returns a Config populated with sensible defaults.
@@ -128,11 +128,11 @@ func Load(path string) (*Config, error) {
 	if err := yaml.Unmarshal(data, &c); err != nil {
 		return nil, err
 	}
-	c.applyDefaults()
+	c.ApplyDefaults()
 	return &c, nil
 }
 
-func (c *Config) applyDefaults() {
+func (c *Config) ApplyDefaults() {
 	d := Default()
 	if c.Title == "" {
 		c.Title = d.Title
