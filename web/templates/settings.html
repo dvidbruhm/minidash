@@ -23,6 +23,7 @@
     <label>Health enabled <input type="checkbox" x-model="cfg.health.enabled"></label>
     <label>Interval (s) <input type="number" x-model.number="cfg.health.interval_seconds"></label>
     <label>Timeout (s) <input type="number" x-model.number="cfg.health.timeout_seconds"></label>
+    <label>Palette hotkey <input x-model="cfg.palette_hotkey" placeholder="ctrl+p"></label>
     <button class="btn primary" @click="saveGeneral()">Save general</button>
   </section>
 
@@ -92,6 +93,16 @@
         </ul>
       </div>
     </template>
+  </section>
+
+  <section>
+    <h2>Config</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin:0 0 8px">Back up or restore the full <code>config.yaml</code>.</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <a class="btn" href="/api/config/download">Download config.yaml</a>
+      <input type="file" accept=".yaml,.yml,text/yaml,application/yaml" @change="restoreConfig($event)" x-ref="cfgfile">
+      <span x-show="restoreMsg" x-text="restoreMsg" :style="'color:'+(restoreOk?'var(--dot-up)':'var(--dot-down)')"></span>
+    </div>
   </section>
 
   <div class="modal" x-show="modal.open" x-cloak @keydown.escape.window="modal.open=false">

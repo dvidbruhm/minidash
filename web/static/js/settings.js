@@ -4,6 +4,8 @@ function settings() {
     iconPacks: window.__MINIDASH_PACKS || [],
     modal: { open: false, link: null },
     picker: { q: '', prefix: '', results: [], timer: null },
+    restoreMsg: '',
+    restoreOk: false,
     _svg: {},
     init() {
       var self = this;
@@ -88,7 +90,21 @@ function settings() {
       fetch('/api/sections/' + sec.id, { method: 'DELETE' }).then(function () { location.reload(); });
     },
     saveGeneral() {
-      fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: this.cfg.title, default_theme: this.cfg.default_theme, default_view: this.cfg.default_view, health: this.cfg.health }) });
+      fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: this.cfg.title, default_theme: this.cfg.default_theme, default_view: this.cfg.default_view, health: this.cfg.health, palette_hotkey: this.cfg.palette_hotkey }) });
+    },
+    restoreConfig(e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var self = this;
+      var reader = new FileReader();
+      reader.onload = function () {
+        fetch('/api/config/upload', { method: 'POST', headers: { 'Content-Type': 'text/yaml' }, body: reader.result }).then(function (r) {
+          self.restoreOk = r.ok;
+          self.restoreMsg = r.ok ? 'Restored \u2014 reloading\u2026' : 'Restore failed (invalid YAML)';
+          if (r.ok) setTimeout(function () { location.reload(); }, 700);
+        });
+      };
+      reader.readAsText(f);
     },
     saveAppearance() {
       fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ appearance: this.cfg.appearance, custom_css: this.cfg.custom_css }) });

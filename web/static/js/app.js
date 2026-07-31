@@ -76,4 +76,72 @@
   function cssEscape(s) { return String(s).replace(/["\\]/g, '\\$&'); }
   setInterval(poll, 30000);
   poll();
+
+  // ---- command palette ----
+  (function () {
+    var hotkey = (window.__MINIDASH_PALETTE_HOTKEY || 'ctrl+p').toLowerCase();
+    var items = [];
+    document.querySelectorAll('#dashboard a.link').forEach(function (a) {
+      var name = a.querySelector('.link-name');
+      if (a.getAttribute('href')) items.push({ name: (name && name.textContent) || a.getAttribute('href'), url: a.getAttribute('href') });
+    });
+    if (!items.length) return;
+
+    var overlay = document.createElement('div');
+    overlay.className = 'palette';
+    overlay.innerHTML =
+      '<div class="palette-card">' +
+      '<input class="palette-input" placeholder="Search links..." autocomplete="off">' +
+      '<ul class="palette-list"></ul>' +
+      '<div class="palette-hint">↑↓ navigate · enter open · esc close</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    var input = overlay.querySelector('.palette-input');
+    var list = overlay.querySelector('.palette-list');
+    var sel = 0;
+
+    function open() { overlay.style.display = 'flex'; input.value = ''; render(''); input.focus(); }
+    function close() { overlay.style.display = 'none'; }
+    function render(q) {
+      ql = q.trim().toLowerCase();
+      var matches = items.filter(function (it) { return !ql || it.name.toLowerCase().indexOf(ql) !== -1; }).slice(0, 8);
+      if (!matches.length) { list.innerHTML = '<li class="empty">No matches</li>'; sel = 0; return; }
+      if (sel >= matches.length) sel = matches.length - 1;
+      list.innerHTML = matches.map(function (m, i) {
+        return '<li class="' + (i === sel ? 'sel' : '') + '" data-url="' + cssEscape(m.url) + '">' + escapeHTML(m.name) + '</li>';
+      }).join('');
+      list._matches = matches;
+    }
+    function escapeHTML(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    var ql = '';
+    input.addEventListener('input', function () { sel = 0; render(input.value); });
+    input.addEventListener('keydown', function (e) {
+      var m = list._matches || [];
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (sel < m.length - 1) sel++; render(input.value); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); if (sel > 0) sel--; render(input.value); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (m[sel]) { window.open(m[sel].url, '_blank', 'noopener'); close(); } }
+      else if (e.key === 'Escape') { e.preventDefault(); close(); }
+    });
+    list.addEventListener('click', function (e) {
+      var li = e.target.closest('li[data-url]'); if (li) { window.open(li.getAttribute('data-url'), '_blank', 'noopener'); close(); }
+    });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+
+    function combo(e) {
+      var p = [];
+      if (e.ctrlKey) p.push('ctrl');
+      if (e.metaKey) p.push('meta');
+      if (e.altKey) p.push('alt');
+      if (e.shiftKey) p.push('shift');
+      var k = e.key.toLowerCase();
+      if (['ctrl', 'meta', 'alt', 'shift'].indexOf(k) === -1) p.push(k);
+      return p.join('+');
+    }
+    function inField(el) { return el && (/INPUT|TEXTAREA|SELECT/.test(el.tagName) || el.isContentEditable); }
+    document.addEventListener('keydown', function (e) {
+      var cur = combo(e);
+      if (cur === hotkey) { e.preventDefault(); open(); return; }
+      if (e.key === '/' && !inField(document.activeElement)) { e.preventDefault(); open(); }
+    });
+  })();
 })();

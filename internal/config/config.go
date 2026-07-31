@@ -9,16 +9,16 @@ import (
 
 // Config is the entire application configuration, serialized to YAML.
 type Config struct {
-	Title        string     `yaml:"title" json:"title"`
-	DefaultView  string     `yaml:"default_view" json:"default_view"`
-	DefaultTheme string     `yaml:"default_theme" json:"default_theme"`
-	PasswordHash string     `yaml:"password_hash,omitempty" json:"password_hash,omitempty"`
-	CustomCss    string     `yaml:"custom_css,omitempty" json:"custom_css,omitempty"`
-	PaletteHotkey string    `yaml:"palette_hotkey,omitempty" json:"palette_hotkey,omitempty"`
-	Health       Health     `yaml:"health" json:"health"`
-	Appearance   Appearance `yaml:"appearance" json:"appearance"`
-	Sections     []Section  `yaml:"sections" json:"sections"`
-	Links        []Link     `yaml:"links" json:"links"`
+	Title         string     `yaml:"title" json:"title"`
+	DefaultView   string     `yaml:"default_view" json:"default_view"`
+	DefaultTheme  string     `yaml:"default_theme" json:"default_theme"`
+	PasswordHash  string     `yaml:"password_hash,omitempty" json:"password_hash,omitempty"`
+	CustomCss     string     `yaml:"custom_css,omitempty" json:"custom_css,omitempty"`
+	PaletteHotkey string     `yaml:"palette_hotkey,omitempty" json:"palette_hotkey,omitempty"`
+	Health        Health     `yaml:"health" json:"health"`
+	Appearance    Appearance `yaml:"appearance" json:"appearance"`
+	Sections      []Section  `yaml:"sections" json:"sections"`
+	Links         []Link     `yaml:"links" json:"links"`
 }
 
 type Health struct {
@@ -101,11 +101,11 @@ func (l Link) IsNote() bool { return l.Type == "note" }
 func Default() Config {
 	t := true
 	return Config{
-		Title:        "Minidash",
-		DefaultView:  "default",
-		DefaultTheme: "auto",
+		Title:         "Minidash",
+		DefaultView:   "default",
+		DefaultTheme:  "auto",
 		PaletteHotkey: "ctrl+p",
-		Health:       Health{Enabled: true, IntervalSeconds: 60, TimeoutSeconds: 5},
+		Health:        Health{Enabled: true, IntervalSeconds: 60, TimeoutSeconds: 5},
 		Appearance: Appearance{
 			Page:      Page{MaxWidth: 1200, Background: "", FontFamily: "system", FontSize: 16},
 			Grid:      Grid{Columns: "auto", MinItemWidth: 220, Gap: 16},

@@ -23,6 +23,14 @@
 .link.note { display:block; white-space:normal; }
 .note-text { display:block; white-space:pre-wrap; word-break:break-word; color:var(--muted); font-size:.9em; margin-top:6px; }
 #dashboard[data-view="compact"] .note-text { display:none; }
+.palette { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100; align-items:flex-start; justify-content:center; padding-top:12vh; }
+.palette-card { width:min(560px,92vw); background:var(--bg); color:var(--fg); border:1px solid var(--border); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.3); overflow:hidden; }
+.palette-input { width:100%; border:0; border-bottom:1px solid var(--border); padding:14px 16px; font-size:1rem; background:transparent; color:var(--fg); outline:none; }
+.palette-list { list-style:none; margin:0; padding:4px; max-height:320px; overflow:auto; }
+.palette-list li { padding:9px 12px; border-radius:8px; cursor:pointer; }
+.palette-list li.sel { background:var(--accent); color:#fff; }
+.palette-list li.empty { color:var(--muted); cursor:default; }
+.palette-hint { padding:6px 14px; font-size:.75rem; color:var(--muted); border-top:1px solid var(--border); }
 .link-icon { font-size:var(--icon-size,24px); display:inline-flex; }
 .link-icon svg { width:1em; height:1em; display:block; }
 .link-name { color:inherit; font-weight:600; }

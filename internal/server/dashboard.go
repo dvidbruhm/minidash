@@ -13,18 +13,19 @@ type dashGroup struct {
 }
 
 type dashData struct {
-	Title       string
-	Theme       string
-	AppMaxWidth int
-	CustomCss   string
-	Groups      []dashGroup
-	Views       []string
-	Status      map[string]string
-	History     map[string][]string
-	ShowDesc    bool
-	Up          int
-	Down        int
-	Unknown     int
+	Title         string
+	Theme         string
+	AppMaxWidth   int
+	CustomCss     string
+	PaletteHotkey string
+	Groups        []dashGroup
+	Views         []string
+	Status        map[string]string
+	History       map[string][]string
+	ShowDesc      bool
+	Up            int
+	Down          int
+	Unknown       int
 }
 
 func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
@@ -75,18 +76,19 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := dashData{
-		Title:       c.Title,
-		Theme:       c.DefaultTheme,
-		AppMaxWidth: c.Appearance.Page.MaxWidth,
-		CustomCss:   c.CustomCss,
-		Groups:      groups,
-		Views:       []string{"default", "compact", "card", "large"},
-		Status:      status,
-		History:     history,
-		ShowDesc:    c.Appearance.Text.ShowDescription,
-		Up:          up,
-		Down:        down,
-		Unknown:     unknown,
+		Title:         c.Title,
+		Theme:         c.DefaultTheme,
+		AppMaxWidth:   c.Appearance.Page.MaxWidth,
+		CustomCss:     c.CustomCss,
+		PaletteHotkey: c.PaletteHotkey,
+		Groups:        groups,
+		Views:         []string{"default", "compact", "card", "large"},
+		Status:        status,
+		History:       history,
+		ShowDesc:      c.Appearance.Text.ShowDescription,
+		Up:            up,
+		Down:          down,
+		Unknown:       unknown,
 	}
 	s.renderPage(w, "dashboard", data)
 }
