@@ -1,7 +1,10 @@
 package health
 
 import (
+	"encoding/json"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -34,6 +37,67 @@ func (c *Checker) CheckAll(urls []string) {
 		go func(u string) { defer wg.Done(); c.checkOne(u) }(u)
 	}
 	wg.Wait()
+	if c.histPath != "" {
+		_ = c.SaveHistory(c.histPath)
+	}
+}
+
+// SetHistoryStore sets the persistence path and loads any existing history.
+func (c *Checker) SetHistoryStore(path string) {
+	c.histPath = path
+	_ = c.LoadHistory(path)
+}
+
+// LoadHistory reads history from path. Missing or corrupt files are ignored
+// (no error returned); the checker keeps whatever it already had.
+func (c *Checker) LoadHistory(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	var m map[string][]string
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil
+	}
+	c.mu.Lock()
+	c.history = m
+	if c.history == nil {
+		c.history = map[string][]string{}
+	}
+	c.mu.Unlock()
+	return nil
+}
+
+// SaveHistory writes history atomically, keeping only URLs currently in the
+// status map (stale URLs are pruned). Best-effort; errors propagated.
+func (c *Checker) SaveHistory(path string) error {
+	c.mu.RLock()
+	out := make(map[string][]string, len(c.status))
+	for u := range c.status {
+		if v, ok := c.history[u]; ok {
+			cp := make([]string, len(v))
+			copy(cp, v)
+			out[u] = cp
+		}
+	}
+	c.mu.RUnlock()
+	data, err := json.Marshal(out)
+	if err != nil {
+		return err
+	}
+	tmp, err := os.CreateTemp(filepath.Dir(path), ".status-history.*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp.Name())
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmp.Name(), path)
 }
 
 func (c *Checker) checkOne(u string) {
