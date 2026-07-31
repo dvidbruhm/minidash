@@ -57,6 +57,7 @@ func main() {
 
 	c := store.Snapshot()
 	ch := health.New(time.Duration(c.Health.TimeoutSeconds)*time.Second, 24)
+	ch.SetHistoryStore(filepath.Join(filepath.Dir(cfgPath), "status-history.json"))
 	stop := make(chan struct{})
 	defer close(stop)
 	if c.Health.Enabled {

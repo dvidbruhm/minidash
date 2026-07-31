@@ -7,23 +7,33 @@ import (
 	"minidash/internal/config"
 )
 
+type statusResp struct {
+	Status  string   `json:"status"`
+	History []string `json:"history"`
+}
+
 func (s *Server) apiStatus(w http.ResponseWriter, r *http.Request) {
 	c := s.deps.Store.Snapshot()
+	out := map[string]statusResp{}
 	if !c.Health.Enabled {
-		writeJSON(w, map[string]string{})
+		writeJSON(w, out)
 		return
 	}
 	all := s.deps.Health.Snapshot()
-	out := map[string]string{}
+	hist := s.deps.Health.History()
 	for _, l := range c.Links {
 		if !linkHealthOn(c, l) {
 			continue
 		}
-		v := all[l.URL]
-		if v == "" {
-			v = "unknown"
+		st := all[l.URL]
+		if st == "" {
+			st = "unknown"
 		}
-		out[l.URL] = v
+		h := hist[l.URL]
+		if h == nil {
+			h = []string{}
+		}
+		out[l.URL] = statusResp{Status: st, History: h}
 	}
 	writeJSON(w, out)
 }
