@@ -70,8 +70,9 @@
   </section>
 
   <section>
-    <h2>Links</h2>
-    <button class="btn primary" @click="openModal(null)">+ Add link</button>
+    <h2>Items</h2>
+    <button class="btn primary" @click="openModal(null,'link')">+ Add link</button>
+    <button class="btn primary" @click="openModal(null,'note')">+ Add note</button>
     <template x-for="g in groupedLinks()" :key="g.id||'_'">
       <div style="margin-top:12px">
         <h3 x-text="g.name || 'Unsectioned'"></h3>
@@ -79,9 +80,10 @@
           <template x-for="link in g.links" :key="link._id">
             <li :data-id="link._id">
               <span class="drag">&#8942;&#8942;</span>
+              <span class="kind" x-text="link.type==='note' ? 'note' : 'link'"></span>
               <span class="preview" x-html="iconHTML(link.icon)"></span>
-              <a x-text="link.name" :href="link.url" target="_blank"></a>
-              <code x-text="link.url"></code>
+              <a x-text="link.name || (link.type==='note' ? '(note)' : '(untitled)')" :href="link.url || '#'" target="_blank"></a>
+              <code x-text="link.type==='note' ? link.text : link.url"></code>
               <button @click="openModal(link)">Edit</button>
               <button @click="duplicateLink(link)">Duplicate</button>
               <button @click="deleteLink(link)">Delete</button>
@@ -94,10 +96,16 @@
 
   <div class="modal" x-show="modal.open" x-cloak @keydown.escape.window="modal.open=false">
     <div class="modal-card">
-      <h3 x-text="modal.link && modal.link._id!=null ? 'Edit link' : 'Add link'"></h3>
-      <label>Name <input x-model="modal.link.name"></label>
-      <label>Description <input x-model="modal.link.description"></label>
-      <label>URL <input x-model="modal.link.url"></label>
+      <h3 x-text="(modal.link && modal.link._id!=null ? 'Edit ' : 'Add ') + (modal.link && modal.link.type==='note' ? 'note' : 'link')"></h3>
+      <div class="seg">
+        <button type="button" @click="modal.link.type='link'" :class="{on:modal.link.type!=='note'}">Link</button>
+        <button type="button" @click="modal.link.type='note'" :class="{on:modal.link.type==='note'}">Note</button>
+      </div>
+      <label x-show="modal.link.type!=='note'">Name <input x-model="modal.link.name"></label>
+      <label x-show="modal.link.type==='note'">Title <input x-model="modal.link.name" placeholder="(optional)"></label>
+      <label x-show="modal.link.type!=='note'">Description <input x-model="modal.link.description"></label>
+      <label x-show="modal.link.type==='note'">Text <textarea x-model="modal.link.text" rows="3"></textarea></label>
+      <label x-show="modal.link.type!=='note'">URL <input x-model="modal.link.url"></label>
       <label>Color <input type="color" x-model="modal.link.color"><input x-model="modal.link.color"></label>
       <label>Section
         <select x-model="modal.link.section">

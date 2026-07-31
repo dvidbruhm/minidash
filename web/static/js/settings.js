@@ -29,8 +29,8 @@ function settings() {
       fetch('/api/icon?icon=' + encodeURIComponent(ref)).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) { self._svg[ref] = t; });
       return this._svg[ref] || '';
     },
-    openModal(link) {
-      this.modal.link = link ? JSON.parse(JSON.stringify(link)) : { name: '', description: '', url: '', icon: '', color: '#4f9cff', section: '', health: true };
+    openModal(link, type) {
+      this.modal.link = link ? JSON.parse(JSON.stringify(link)) : { type: type || 'link', name: '', description: '', text: '', url: '', icon: '', color: '#4f9cff', section: '', health: true };
       this.modal.open = true;
       if (!this.picker.results.length) this.searchIcons();
     },
@@ -45,7 +45,11 @@ function settings() {
     pickIcon(ref) { this.modal.link.icon = ref; },
     saveLink() {
       var l = this.modal.link;
-      if (!l.name || !l.url) { alert('Name and URL required'); return; }
+      if (l.type === 'note') {
+        if (!l.text || !l.text.trim()) { alert('Note text required'); return; }
+      } else {
+        if (!l.name || !l.url) { alert('Name and URL required'); return; }
+      }
       var url = '/api/links', method = 'POST';
       if (l._id != null) { url = '/api/links/' + l._id; method = 'PUT'; }
       var self = this;

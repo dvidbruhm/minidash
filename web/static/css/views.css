@@ -20,6 +20,9 @@
 .spark .sq { display:inline-block; width:3px; height:8px; background:var(--dot-unknown); opacity:.45; }
 .spark .sq-up { background:var(--dot-up); opacity:1; }
 .spark .sq-down { background:var(--dot-down); opacity:1; }
+.link.note { display:block; white-space:normal; }
+.note-text { display:block; white-space:pre-wrap; word-break:break-word; color:var(--muted); font-size:.9em; margin-top:6px; }
+#dashboard[data-view="compact"] .note-text { display:none; }
 .link-icon { font-size:var(--icon-size,24px); display:inline-flex; }
 .link-icon svg { width:1em; height:1em; display:block; }
 .link-name { color:inherit; font-weight:600; }

@@ -21,4 +21,8 @@ code{color:var(--muted);font-size:.8em;overflow:hidden;text-overflow:ellipsis;wh
 .picker .chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
 .picker .chips button{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--fg);cursor:pointer}
 .picker .chips button.on{background:var(--accent);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.seg button{background:none;border:0;padding:6px 14px;cursor:pointer;color:var(--fg)}
+.seg button.on{background:var(--accent);color:#fff}
+.kind{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);border:1px solid var(--border);border-radius:999px;padding:1px 7px}
 .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
