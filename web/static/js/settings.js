@@ -1,8 +1,12 @@
+function blankLink(type) {
+  return { type: type || 'link', name: '', description: '', text: '', url: '', icon: '', color: '#4f9cff', section: '', health: true };
+}
+
 function settings() {
   return {
     cfg: window.__MINIDASH_CONFIG,
     iconPacks: window.__MINIDASH_PACKS || [],
-    modal: { open: false, link: null },
+    modal: { open: false, link: blankLink('link') },
     picker: { q: '', prefix: '', results: [], timer: null },
     restoreMsg: '',
     restoreOk: false,
@@ -32,7 +36,7 @@ function settings() {
       return this._svg[ref] || '';
     },
     openModal(link, type) {
-      this.modal.link = link ? JSON.parse(JSON.stringify(link)) : { type: type || 'link', name: '', description: '', text: '', url: '', icon: '', color: '#4f9cff', section: '', health: true };
+      this.modal.link = link ? JSON.parse(JSON.stringify(link)) : blankLink(type || 'link');
       this.modal.open = true;
       if (!this.picker.results.length) this.searchIcons();
     },

@@ -27,6 +27,9 @@ type settingsView struct {
 
 func (s *Server) settings(w http.ResponseWriter, r *http.Request) {
 	c := s.deps.Store.Snapshot()
+	if c.Sections == nil {
+		c.Sections = []config.Section{}
+	}
 	links := make([]clientLink, len(c.Links))
 	for i, l := range c.Links {
 		links[i] = clientLink{ID: i, Link: l}

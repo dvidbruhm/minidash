@@ -101,3 +101,24 @@ func TestDashboardNoteRender(t *testing.T) {
 		t.Fatalf("note rendered as an anchor with empty href")
 	}
 }
+
+// Settings embeds the config as JSON for the Alpine UI. nil slices must be
+// emitted as [] (not null) so client-side iteration doesn't throw.
+func TestSettingsEmitsArraySlices(t *testing.T) {
+	s := newTestServer(t)
+	_ = s.deps.Store.Update(func(c *config.Config) error {
+		c.Sections = nil
+		c.Links = nil
+		return nil
+	})
+	req := httptest.NewRequest(http.MethodGet, "/settings", nil)
+	rec := httptest.NewRecorder()
+	s.Handler().ServeHTTP(rec, req)
+	body := rec.Body.String()
+	if strings.Contains(body, `"sections":null`) {
+		t.Fatal("sections emitted as null; client forEach would throw")
+	}
+	if strings.Contains(body, `"links":null`) {
+		t.Fatal("links emitted as null; client forEach would throw")
+	}
+}
