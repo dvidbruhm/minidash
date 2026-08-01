@@ -9,102 +9,112 @@
   </div>
 
   <section>
-    <h2>General</h2>
-    <div class="grid2">
-      <label>Title <input x-model="cfg.title"></label>
-      <label>Default theme
-        <select x-model="cfg.default_theme">{{range .Themes}}<option value="{{.}}">{{.}}</option>{{end}}</select>
-      </label>
-      <label>Default view
-        <select x-model="cfg.default_view">
-          <option value="default">default</option><option value="compact">compact</option>
-          <option value="card">card</option><option value="large">large</option>
-        </select>
-      </label>
-      <label class="check">Health enabled <input type="checkbox" x-model="cfg.health.enabled"></label>
-      <label>Interval (s) <input type="number" x-model.number="cfg.health.interval_seconds"></label>
-      <label>Timeout (s) <input type="number" x-model.number="cfg.health.timeout_seconds"></label>
-      <label>Palette hotkey <input x-model="cfg.palette_hotkey" placeholder="ctrl+p"></label>
-    </div>
-    <button class="btn primary" @click="saveGeneral()">Save general</button>
-  </section>
-
-  <section>
-    <h2>Appearance</h2>
-    <div class="grid2">
-      <label>Max width <input type="number" x-model.number="cfg.appearance.page.max_width"></label>
-      <label>Background <input x-model="cfg.appearance.page.background" placeholder="#hex or empty"></label>
-      <label>Font family <select x-model="cfg.appearance.page.font_family"><option>system</option><option>sans</option><option>serif</option><option>mono</option></select></label>
-      <label>Font size <input type="number" x-model.number="cfg.appearance.page.font_size"></label>
-      <label>Columns (auto or N) <input x-model="cfg.appearance.grid.columns"></label>
-      <label>Min item width <input type="number" x-model.number="cfg.appearance.grid.min_item_width"></label>
-      <label>Gap <input type="number" x-model.number="cfg.appearance.grid.gap"></label>
-      <label>Corner radius <input type="number" x-model.number="cfg.appearance.item.corner_radius"></label>
-      <label>Padding <input type="number" x-model.number="cfg.appearance.item.padding"></label>
-      <label class="check">Item background <input type="checkbox" x-model="cfg.appearance.item.background"></label>
-      <label class="check">Border <input type="checkbox" x-model="cfg.appearance.item.border"></label>
-      <label>Border strength <input type="number" x-model.number="cfg.appearance.item.border_strength"></label>
-      <label class="check">Shadow <input type="checkbox" x-model="cfg.appearance.item.shadow"></label>
-      <label>Shadow strength <input type="number" x-model.number="cfg.appearance.item.shadow_strength"></label>
-      <label>Icon default <input type="number" x-model.number="cfg.appearance.icon.size_default"></label>
-      <label>Icon compact <input type="number" x-model.number="cfg.appearance.icon.size_compact"></label>
-      <label>Icon card <input type="number" x-model.number="cfg.appearance.icon.size_card"></label>
-      <label>Icon large <input type="number" x-model.number="cfg.appearance.icon.size_large"></label>
-      <label>Text align <select x-model="cfg.appearance.text.align"><option>left</option><option>center</option></select></label>
-      <label class="check">Show description <input type="checkbox" x-model="cfg.appearance.text.show_description"></label>
-      <label class="check">Status dot enabled <input type="checkbox" x-model="cfg.appearance.status_dot.enabled"></label>
-      <label>Status dot size <input type="number" x-model.number="cfg.appearance.status_dot.size"></label>
-      <label>Status dot position <select x-model="cfg.appearance.status_dot.position"><option>bottom-right</option><option>top-right</option></select></label>
-    </div>
-    <label class="full">Custom CSS
-      <textarea x-model="cfg.custom_css" rows="4" placeholder="/* extra CSS, applied to every page */" spellcheck="false"></textarea>
-    </label>
-    <button class="btn primary" @click="saveAppearance()">Save appearance</button>
-  </section>
-
-  <section>
-    <h2>Sections</h2>
-    <ul id="sections-list">
-      <template x-for="(sec, idx) in cfg.sections" :key="sec.id">
-        <li :data-id="sec.id"><input x-model="sec.name" @change="saveSection(sec)"><button class="btn icon danger" @click="deleteSection(idx)" title="Delete section" aria-label="Delete section"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button></li>
-      </template>
-    </ul>
-    <button class="btn" @click="addSection()">+ Add section</button>
-  </section>
-
-  <section>
-    <h2>Items</h2>
-    <button class="btn primary" @click="openModal(null,'link')">+ Add link</button>
-    <button class="btn primary" @click="openModal(null,'note')">+ Add note</button>
-    <template x-for="g in groupedLinks()" :key="g.id||'_'">
-      <div style="margin-top:12px">
-        <h3 x-text="g.name || 'Unsectioned'"></h3>
-        <ul class="links-list" :data-section="g.id">
-          <template x-for="link in g.links" :key="link._id">
-            <li :data-id="link._id">
-              <span class="drag">&#8942;&#8942;</span>
-              <span class="kind" x-text="link.type==='note' ? 'note' : 'link'"></span>
-              <span class="preview" x-html="iconHTML(link.icon)"></span>
-              <a x-text="link.name || (link.type==='note' ? '(note)' : '(untitled)')" :href="link.url || '#'" target="_blank"></a>
-              <code x-text="link.type==='note' ? link.text : link.url"></code>
-              <button class="btn icon" @click="openModal(link)" title="Edit" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
-              <button class="btn icon" @click="duplicateLink(link)" title="Duplicate" aria-label="Duplicate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-              <button class="btn icon danger" @click="deleteLink(link)" title="Delete" aria-label="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>
-            </li>
-          </template>
-        </ul>
+    <details open>
+      <summary class="sec-toggle"><h2>General</h2></summary>
+      <div class="grid2">
+        <label>Title <input x-model="cfg.title"></label>
+        <label>Default theme
+          <select x-model="cfg.default_theme">{{range .Themes}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+        </label>
+        <label>Default view
+          <select x-model="cfg.default_view">
+            <option value="default">default</option><option value="compact">compact</option>
+            <option value="card">card</option><option value="large">large</option>
+          </select>
+        </label>
+        <label class="check">Health enabled <input type="checkbox" x-model="cfg.health.enabled"></label>
+        <label>Interval (s) <input type="number" x-model.number="cfg.health.interval_seconds"></label>
+        <label>Timeout (s) <input type="number" x-model.number="cfg.health.timeout_seconds"></label>
+        <label>Palette hotkey <input x-model="cfg.palette_hotkey" placeholder="ctrl+p"></label>
       </div>
-    </template>
+      <button class="btn primary" @click="saveGeneral()">Save general</button>
+    </details>
   </section>
 
   <section>
-    <h2>Config</h2>
-    <p style="color:var(--muted);font-size:.85rem;margin:0 0 8px">Back up or restore the full <code>config.yaml</code>.</p>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <a class="btn" href="/api/config/download">Download config.yaml</a>
-      <input type="file" accept=".yaml,.yml,text/yaml,application/yaml" @change="restoreConfig($event)" x-ref="cfgfile">
-      <span x-show="restoreMsg" x-text="restoreMsg" :style="'color:'+(restoreOk?'var(--dot-up)':'var(--dot-down)')"></span>
-    </div>
+    <details open>
+      <summary class="sec-toggle"><h2>Sections</h2></summary>
+      <ul id="sections-list">
+        <template x-for="(sec, idx) in cfg.sections" :key="sec.id">
+          <li :data-id="sec.id"><input x-model="sec.name" @change="saveSection(sec)"><button class="btn icon danger" @click="deleteSection(idx)" title="Delete section" aria-label="Delete section"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button></li>
+        </template>
+      </ul>
+      <button class="btn" @click="addSection()">+ Add section</button>
+    </details>
+  </section>
+
+  <section>
+    <details open>
+      <summary class="sec-toggle"><h2>Items</h2></summary>
+      <button class="btn primary" @click="openModal(null,'link')">+ Add link</button>
+      <button class="btn primary" @click="openModal(null,'note')">+ Add note</button>
+      <template x-for="g in groupedLinks()" :key="g.id||'_'">
+        <div style="margin-top:12px">
+          <h3 x-text="g.name || 'Unsectioned'"></h3>
+          <ul class="links-list" :data-section="g.id">
+            <template x-for="link in g.links" :key="link._id">
+              <li :data-id="link._id">
+                <span class="drag">&#8942;&#8942;</span>
+                <span class="kind" x-text="link.type==='note' ? 'note' : 'link'"></span>
+                <span class="preview" x-html="iconHTML(link.icon)"></span>
+                <a x-text="link.name || (link.type==='note' ? '(note)' : '(untitled)')" :href="link.url || '#'" target="_blank"></a>
+                <code x-text="link.type==='note' ? link.text : link.url"></code>
+                <button class="btn icon" @click="openModal(link)" title="Edit" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+                <button class="btn icon" @click="duplicateLink(link)" title="Duplicate" aria-label="Duplicate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                <button class="btn icon danger" @click="deleteLink(link)" title="Delete" aria-label="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </template>
+    </details>
+  </section>
+
+  <section>
+    <details open>
+      <summary class="sec-toggle"><h2>Config</h2></summary>
+      <p style="color:var(--muted);font-size:.85rem;margin:0 0 8px">Back up or restore the full <code>config.yaml</code>.</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <a class="btn" href="/api/config/download">Download config.yaml</a>
+        <input type="file" accept=".yaml,.yml,text/yaml,application/yaml" @change="restoreConfig($event)" x-ref="cfgfile">
+        <span x-show="restoreMsg" x-text="restoreMsg" :style="'color:'+(restoreOk?'var(--dot-up)':'var(--dot-down)')"></span>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <details>
+      <summary class="sec-toggle"><h2>Appearance</h2></summary>
+      <div class="grid2">
+        <label>Max width <input type="number" x-model.number="cfg.appearance.page.max_width"></label>
+        <label>Background <input x-model="cfg.appearance.page.background" placeholder="#hex or empty"></label>
+        <label>Font family <select x-model="cfg.appearance.page.font_family"><option>system</option><option>sans</option><option>serif</option><option>mono</option></select></label>
+        <label>Font size <input type="number" x-model.number="cfg.appearance.page.font_size"></label>
+        <label>Columns (auto or N) <input x-model="cfg.appearance.grid.columns"></label>
+        <label>Min item width <input type="number" x-model.number="cfg.appearance.grid.min_item_width"></label>
+        <label>Gap <input type="number" x-model.number="cfg.appearance.grid.gap"></label>
+        <label>Corner radius <input type="number" x-model.number="cfg.appearance.item.corner_radius"></label>
+        <label>Padding <input type="number" x-model.number="cfg.appearance.item.padding"></label>
+        <label class="check">Item background <input type="checkbox" x-model="cfg.appearance.item.background"></label>
+        <label class="check">Border <input type="checkbox" x-model="cfg.appearance.item.border"></label>
+        <label>Border strength <input type="number" x-model.number="cfg.appearance.item.border_strength"></label>
+        <label class="check">Shadow <input type="checkbox" x-model="cfg.appearance.item.shadow"></label>
+        <label>Shadow strength <input type="number" x-model.number="cfg.appearance.item.shadow_strength"></label>
+        <label>Icon default <input type="number" x-model.number="cfg.appearance.icon.size_default"></label>
+        <label>Icon compact <input type="number" x-model.number="cfg.appearance.icon.size_compact"></label>
+        <label>Icon card <input type="number" x-model.number="cfg.appearance.icon.size_card"></label>
+        <label>Icon large <input type="number" x-model.number="cfg.appearance.icon.size_large"></label>
+        <label>Text align <select x-model="cfg.appearance.text.align"><option>left</option><option>center</option></select></label>
+        <label class="check">Show description <input type="checkbox" x-model="cfg.appearance.text.show_description"></label>
+        <label class="check">Status dot enabled <input type="checkbox" x-model="cfg.appearance.status_dot.enabled"></label>
+        <label>Status dot size <input type="number" x-model.number="cfg.appearance.status_dot.size"></label>
+        <label>Status dot position <select x-model="cfg.appearance.status_dot.position"><option>bottom-right</option><option>top-right</option></select></label>
+      </div>
+      <label class="full">Custom CSS
+        <textarea x-model="cfg.custom_css" rows="4" placeholder="/* extra CSS, applied to every page */" spellcheck="false"></textarea>
+      </label>
+      <button class="btn primary" @click="saveAppearance()">Save appearance</button>
+    </details>
   </section>
 
   <div class="modal" x-show="modal.open" x-cloak @keydown.escape.window="modal.open=false">

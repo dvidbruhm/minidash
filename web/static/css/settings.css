@@ -1,8 +1,15 @@
 [x-cloak]{display:none!important}
 section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.sec-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;list-style:none;margin-bottom:12px}
+.sec-toggle::-webkit-details-marker{display:none}
+.sec-toggle h2{margin:0}
+.sec-toggle::after{content:"\25BC";color:var(--muted);font-size:1.2rem;line-height:1;transition:transform .15s ease}
+details:not([open]) > .sec-toggle::after{transform:rotate(-90deg)}
 .grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:8px}
+label{display:block;font-size:.85rem;line-height:1.5;color:var(--muted);margin-bottom:8px}
 label.full{grid-column:1/-1}
+.grid2 .check{margin:1.5em 0 8px;width:100%}
+.grid2 .check input[type=checkbox]{order:-1}
 ul{list-style:none;padding:0;margin:8px 0}
 .links-list li{display:flex;align-items:center;gap:10px;background:var(--input-bg);padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
 .links-list code{margin-right:auto}
