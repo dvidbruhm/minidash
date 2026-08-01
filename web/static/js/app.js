@@ -159,8 +159,8 @@
       var arrows = document.createElement('span');
       arrows.className = 'num-arrows';
       arrows.innerHTML =
-        '<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 5l4-4 4 4"/></svg>' +
-        '<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l4 4 4-4"/></svg>';
+        '<svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 5l4-4 4 4"/></svg>' +
+        '<svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l4 4 4-4"/></svg>';
       wrap.appendChild(arrows);
       function step(dir, ev) {
         ev.preventDefault();

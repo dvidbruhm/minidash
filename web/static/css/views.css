@@ -41,6 +41,6 @@
 .status-dot.status-down { background:var(--dot-down); }
 .controls { display:flex; gap:8px; align-items:center; }
 .view-toggle { display:inline-flex; gap:2px; padding:3px; background:var(--input-bg); border-radius:var(--radius); }
-.view-toggle button { height:calc(var(--control-h) - 6px); padding:0 14px; background:none; border:0; border-radius:8px; color:var(--muted); cursor:pointer; font:inherit; font-size:.83rem; }
+.view-toggle button { height:calc(var(--control-h) - 6px); padding:0 14px; background:none; border:0; border-radius:var(--radius-sm); color:var(--muted); cursor:pointer; font:inherit; font-size:.83rem; }
 .view-toggle button:hover { color:var(--fg); }
 .view-toggle button[aria-pressed="true"] { background:var(--card); color:var(--fg); box-shadow:var(--shadow-sm); }
