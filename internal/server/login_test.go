@@ -53,3 +53,21 @@ func TestLoginFlow(t *testing.T) {
 		t.Fatalf("settings redirected (auth failed): %d", rec2.Code)
 	}
 }
+
+// The login page shares the layout (which references .AppMaxWidth); it must
+// render the form rather than blanking on a template field error.
+func TestLoginPageRenders(t *testing.T) {
+	deps := NewTestDeps(t)
+	deps.Auth = mustAuth(t, "secret")
+	s, _ := New(deps)
+	req := httptest.NewRequest(http.MethodGet, "/login", nil)
+	rec := httptest.NewRecorder()
+	s.Handler().ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("login page code %d", rec.Code)
+	}
+	body := rec.Body.String()
+	if !strings.Contains(body, "<form") || !strings.Contains(body, "Sign in") {
+		t.Fatalf("login form not rendered; body: %s", body)
+	}
+}
