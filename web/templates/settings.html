@@ -10,20 +10,22 @@
 
   <section>
     <h2>General</h2>
-    <label>Title <input x-model="cfg.title"></label>
-    <label>Default theme
-      <select x-model="cfg.default_theme">{{range .Themes}}<option value="{{.}}">{{.}}</option>{{end}}</select>
-    </label>
-    <label>Default view
-      <select x-model="cfg.default_view">
-        <option value="default">default</option><option value="compact">compact</option>
-        <option value="card">card</option><option value="large">large</option>
-      </select>
-    </label>
-    <label>Health enabled <input type="checkbox" x-model="cfg.health.enabled"></label>
-    <label>Interval (s) <input type="number" x-model.number="cfg.health.interval_seconds"></label>
-    <label>Timeout (s) <input type="number" x-model.number="cfg.health.timeout_seconds"></label>
-    <label>Palette hotkey <input x-model="cfg.palette_hotkey" placeholder="ctrl+p"></label>
+    <div class="grid2">
+      <label>Title <input x-model="cfg.title"></label>
+      <label>Default theme
+        <select x-model="cfg.default_theme">{{range .Themes}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+      </label>
+      <label>Default view
+        <select x-model="cfg.default_view">
+          <option value="default">default</option><option value="compact">compact</option>
+          <option value="card">card</option><option value="large">large</option>
+        </select>
+      </label>
+      <label class="check">Health enabled <input type="checkbox" x-model="cfg.health.enabled"></label>
+      <label>Interval (s) <input type="number" x-model.number="cfg.health.interval_seconds"></label>
+      <label>Timeout (s) <input type="number" x-model.number="cfg.health.timeout_seconds"></label>
+      <label>Palette hotkey <input x-model="cfg.palette_hotkey" placeholder="ctrl+p"></label>
+    </div>
     <button class="btn primary" @click="saveGeneral()">Save general</button>
   </section>
 
@@ -39,18 +41,18 @@
       <label>Gap <input type="number" x-model.number="cfg.appearance.grid.gap"></label>
       <label>Corner radius <input type="number" x-model.number="cfg.appearance.item.corner_radius"></label>
       <label>Padding <input type="number" x-model.number="cfg.appearance.item.padding"></label>
-      <label>Item background <input type="checkbox" x-model="cfg.appearance.item.background"></label>
-      <label>Border <input type="checkbox" x-model="cfg.appearance.item.border"></label>
+      <label class="check">Item background <input type="checkbox" x-model="cfg.appearance.item.background"></label>
+      <label class="check">Border <input type="checkbox" x-model="cfg.appearance.item.border"></label>
       <label>Border strength <input type="number" x-model.number="cfg.appearance.item.border_strength"></label>
-      <label>Shadow <input type="checkbox" x-model="cfg.appearance.item.shadow"></label>
+      <label class="check">Shadow <input type="checkbox" x-model="cfg.appearance.item.shadow"></label>
       <label>Shadow strength <input type="number" x-model.number="cfg.appearance.item.shadow_strength"></label>
       <label>Icon default <input type="number" x-model.number="cfg.appearance.icon.size_default"></label>
       <label>Icon compact <input type="number" x-model.number="cfg.appearance.icon.size_compact"></label>
       <label>Icon card <input type="number" x-model.number="cfg.appearance.icon.size_card"></label>
       <label>Icon large <input type="number" x-model.number="cfg.appearance.icon.size_large"></label>
       <label>Text align <select x-model="cfg.appearance.text.align"><option>left</option><option>center</option></select></label>
-      <label>Show description <input type="checkbox" x-model="cfg.appearance.text.show_description"></label>
-      <label>Status dot enabled <input type="checkbox" x-model="cfg.appearance.status_dot.enabled"></label>
+      <label class="check">Show description <input type="checkbox" x-model="cfg.appearance.text.show_description"></label>
+      <label class="check">Status dot enabled <input type="checkbox" x-model="cfg.appearance.status_dot.enabled"></label>
       <label>Status dot size <input type="number" x-model.number="cfg.appearance.status_dot.size"></label>
       <label>Status dot position <select x-model="cfg.appearance.status_dot.position"><option>bottom-right</option><option>top-right</option></select></label>
     </div>
@@ -64,7 +66,7 @@
     <h2>Sections</h2>
     <ul id="sections-list">
       <template x-for="(sec, idx) in cfg.sections" :key="sec.id">
-        <li :data-id="sec.id"><input x-model="sec.name" @change="saveSection(sec)"><button @click="deleteSection(idx)">x</button></li>
+        <li :data-id="sec.id"><input x-model="sec.name" @change="saveSection(sec)"><button class="btn icon danger" @click="deleteSection(idx)" title="Delete section" aria-label="Delete section">&#128465;</button></li>
       </template>
     </ul>
     <button class="btn" @click="addSection()">+ Add section</button>
@@ -85,9 +87,9 @@
               <span class="preview" x-html="iconHTML(link.icon)"></span>
               <a x-text="link.name || (link.type==='note' ? '(note)' : '(untitled)')" :href="link.url || '#'" target="_blank"></a>
               <code x-text="link.type==='note' ? link.text : link.url"></code>
-              <button @click="openModal(link)">Edit</button>
-              <button @click="duplicateLink(link)">Duplicate</button>
-              <button @click="deleteLink(link)">Delete</button>
+              <button class="btn icon" @click="openModal(link)" title="Edit" aria-label="Edit">&#9998;</button>
+              <button class="btn icon" @click="duplicateLink(link)" title="Duplicate" aria-label="Duplicate">&#8677;</button>
+              <button class="btn icon danger" @click="deleteLink(link)" title="Delete" aria-label="Delete">&#128465;</button>
             </li>
           </template>
         </ul>
@@ -133,7 +135,7 @@
         </div>
         <div class="results">
           <template x-for="res in picker.results" :key="res.prefix+':'+res.name">
-            <button class="res" :style="'color:'+(modal.link.color||'#888')" @click="pickIcon(res.prefix+':'+res.name)" :title="res.prefix+':'+res.name" x-html="res.svg"></button>
+            <button class="res" :class="{ on: (res.prefix+':'+res.name)===modal.link.icon }" :style="'color:'+(modal.link.color||'#888')" @click="pickIcon(res.prefix+':'+res.name)" :title="res.prefix+':'+res.name" x-html="res.svg"></button>
           </template>
         </div>
       </div>
