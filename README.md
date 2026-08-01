@@ -20,6 +20,10 @@ dots. Edit everything from the in-app **Settings** page or by editing the YAML.
   `status-history.json` so it survives restarts)
 - **Custom CSS**: an Appearance-panel textarea whose contents are injected into
   every page for owner styling
+- **Command palette**: press `/` (or a configurable hotkey, default `Ctrl+P`) on
+  the dashboard to fuzzy-search and open any link
+- **Config backup/restore**: download or upload the full `config.yaml` from
+  Settings
 - **Searchable icon picker** — Simple Icons (brand logos), Lucide, Tabler,
   bundled in the binary (fully offline)
 - **Appearance panel**: page width/background/font, grid columns/gap, item
