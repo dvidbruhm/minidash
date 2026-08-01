@@ -1,4 +1,6 @@
 (function () {
+  initNumberSteppers();
+
   var dash = document.getElementById('dashboard');
   if (!dash) return;
   var KEY_V = 'minidash.view', KEY_T = 'minidash.theme';
@@ -144,4 +146,30 @@
       if (e.key === '/' && !inField(document.activeElement)) { e.preventDefault(); open(); }
     });
   })();
+
+  function initNumberSteppers() {
+    document.querySelectorAll('input[type="number"]:not([data-stepper])').forEach(function (input) {
+      input.setAttribute('data-stepper', '1');
+      var parent = input.parentElement;
+      if (parent && parent.classList.contains('num')) return;
+      var wrap = document.createElement('span');
+      wrap.className = 'num';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+      var arrows = document.createElement('span');
+      arrows.className = 'num-arrows';
+      arrows.innerHTML =
+        '<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 5l4-4 4 4"/></svg>' +
+        '<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l4 4 4-4"/></svg>';
+      wrap.appendChild(arrows);
+      function step(dir, ev) {
+        ev.preventDefault();
+        var n = ev.shiftKey ? 10 : 1;
+        if (dir > 0) input.stepUp(n); else input.stepDown(n);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      arrows.children[0].addEventListener('click', function (e) { step(1, e); });
+      arrows.children[1].addEventListener('click', function (e) { step(-1, e); });
+    });
+  }
 })();
