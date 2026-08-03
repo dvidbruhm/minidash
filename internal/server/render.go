@@ -13,11 +13,12 @@ import (
 func (s *Server) renderPage(w http.ResponseWriter, page string, data any) {
 	t := template.Must(template.New("").
 		Funcs(template.FuncMap{
-			"iconSVG":  s.iconSVG,
-			"statusOf": statusOf,
-			"json":     marshalJSON,
-			"css":      func(s string) template.CSS { return template.CSS(s) },
-			"list":     func(args ...any) []any { return args },
+		"iconSVG":  s.iconSVG,
+		"statusOf": statusOf,
+		"json":     marshalJSON,
+		"linkJSON": func(l dashLink) string { b, _ := json.Marshal(l); return string(b) },
+		"css":      func(s string) template.CSS { return template.CSS(s) },
+		"list":     func(args ...any) []any { return args },
 		}).
 		ParseFS(web.TemplateFS, "templates/layout.html", "templates/"+page+".html"))
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

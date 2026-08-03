@@ -136,8 +136,8 @@
           <template x-for="sec in cfg.sections" :key="sec.id"><option :value="sec.id" x-text="sec.name"></option></template>
         </select>
       </label>
-      <label>Icon</label>
-      <div class="picker">
+      <label x-show="modal.link.type!=='note'">Icon</label>
+      <div class="picker" x-show="modal.link.type!=='note'">
         <input placeholder="search icons" x-model="picker.q" @input="searchIcons()">
         <div class="chips">
           <button @click="picker.prefix='';searchIcons()" :class="{on:picker.prefix===''}">All</button>

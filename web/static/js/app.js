@@ -147,6 +147,56 @@
     });
   })();
 
+  // ---- note modal: view whole note + edit ----
+  (function () {
+    var modal = document.getElementById('note-modal');
+    if (!modal) return;
+    var titleEl = document.getElementById('note-title');
+    var bodyEl = document.getElementById('note-body');
+    var editPanel = document.getElementById('note-edit');
+    var editTitle = document.getElementById('note-edit-title');
+    var editText = document.getElementById('note-edit-text');
+    var editBtn = document.getElementById('note-edit-btn');
+    var saveBtn = document.getElementById('note-save-btn');
+    var cancelBtn = document.getElementById('note-cancel-btn');
+    var closeBtn = document.getElementById('note-close');
+    var current = null;
+
+    function viewMode() { editPanel.hidden = true; bodyEl.hidden = false; editBtn.hidden = false; }
+    function editMode() { bodyEl.hidden = true; editPanel.hidden = false; editBtn.hidden = true; editText.focus(); }
+    function open(note) {
+      current = note;
+      titleEl.textContent = note.name || '(untitled)';
+      bodyEl.textContent = note.text || '';
+      editTitle.value = note.name || '';
+      editText.value = note.text || '';
+      viewMode();
+      modal.hidden = false;
+    }
+    function close() { modal.hidden = true; current = null; }
+
+    document.querySelectorAll('.link.note').forEach(function (card) {
+      var handler = function () {
+        try { open(JSON.parse(card.getAttribute('data-note'))); } catch (e) { /* ignore */ }
+      };
+      card.addEventListener('click', handler);
+      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+    });
+
+    editBtn.addEventListener('click', editMode);
+    cancelBtn.addEventListener('click', viewMode);
+    saveBtn.addEventListener('click', function () {
+      if (!current) return;
+      var updated = Object.assign({}, current, { name: editTitle.value, text: editText.value, icon: '' });
+      if (!updated.text || !updated.text.trim()) { alert('Note text required'); return; }
+      fetch('/api/links/' + current._id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) })
+        .then(function (r) { if (r.ok) { close(); location.reload(); } else { alert('Save failed'); } });
+    });
+    closeBtn.addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+  })();
+
   function initNumberSteppers() {
     document.querySelectorAll('input[type="number"]:not([data-stepper])').forEach(function (input) {
       input.setAttribute('data-stepper', '1');

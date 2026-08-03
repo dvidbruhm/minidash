@@ -29,10 +29,9 @@
     <div class="grid">
       {{range .Links}}
       {{if .IsNote}}
-      <div class="link note" style="color:{{.Color}}">
-        {{if .Icon}}<span class="link-icon">{{iconSVG .Icon}}</span>{{end}}
+      <div class="link note" data-id="{{.ID}}" data-note="{{linkJSON .}}" style="color:{{.Color}}" tabindex="0" role="button">
         {{if .Name}}<span class="link-name">{{.Name}}</span>{{end}}
-        {{if and $showDesc .Text}}<span class="note-text">{{.Text}}</span>{{end}}
+        {{if .Text}}<span class="note-text">{{.Text}}</span>{{end}}
       </div>
       {{else}}
       <a class="link" href="{{.URL}}" target="_blank" rel="noopener noreferrer" style="color:{{.Color}}">
@@ -46,6 +45,23 @@
       {{end}}
     </div>
   {{end}}
+</div>
+
+<div class="note-modal" id="note-modal" hidden>
+  <div class="note-modal-card" role="dialog" aria-modal="true" aria-labelledby="note-title">
+    <button type="button" class="note-modal-x" id="note-close" aria-label="Close">&times;</button>
+    <button type="button" class="btn icon note-modal-edit" id="note-edit-btn" title="Edit">&#9998;</button>
+    <h3 id="note-title"></h3>
+    <div class="note-body" id="note-body"></div>
+    <div class="note-edit" id="note-edit" hidden>
+      <input type="text" id="note-edit-title" placeholder="Title (optional)">
+      <textarea id="note-edit-text" rows="10"></textarea>
+      <div class="note-edit-actions">
+        <button type="button" class="btn" id="note-cancel-btn">Cancel</button>
+        <button type="button" class="btn primary" id="note-save-btn">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
 <script>window.__MINIDASH_DEFAULT_THEME = {{printf "%q" .Theme}}; window.__MINIDASH_PALETTE_HOTKEY = {{printf "%q" .PaletteHotkey}};</script>
 {{end}}

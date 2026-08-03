@@ -6,9 +6,14 @@ import (
 	"minidash/internal/config"
 )
 
+type dashLink struct {
+	ID int `json:"_id"`
+	config.Link
+}
+
 type dashGroup struct {
 	Name   string
-	Links  []config.Link
+	Links  []dashLink
 	Rollup string
 }
 
@@ -55,7 +60,7 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 	for i := range groups {
 		gDown, gUnknown := false, false
 		for _, l := range groups[i].Links {
-			if !linkHealthOn(c, l) {
+			if !linkHealthOn(c, l.Link) {
 				continue
 			}
 			switch statusOf(status, l.URL) {
@@ -95,13 +100,14 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 
 // groupLinks returns unsectioned links first, then each section in order.
 func groupLinks(c config.Config) []dashGroup {
-	var unsectioned []config.Link
-	sections := map[string][]config.Link{}
-	for _, l := range c.Links {
+	var unsectioned []dashLink
+	sections := map[string][]dashLink{}
+	for i, l := range c.Links {
+		dl := dashLink{ID: i, Link: l}
 		if l.Section == "" {
-			unsectioned = append(unsectioned, l)
+			unsectioned = append(unsectioned, dl)
 		} else {
-			sections[l.Section] = append(sections[l.Section], l)
+			sections[l.Section] = append(sections[l.Section], dl)
 		}
 	}
 	out := []dashGroup{}

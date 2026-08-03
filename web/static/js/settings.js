@@ -53,6 +53,7 @@ function settings() {
       var l = this.modal.link;
       if (l.type === 'note') {
         if (!l.text || !l.text.trim()) { alert('Note text required'); return; }
+        l.icon = '';
       } else {
         if (!l.name || !l.url) { alert('Name and URL required'); return; }
       }
